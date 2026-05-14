@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #007bff;
+  --color-primary-hover: #0056b3;
+  --color-success: #28a745;
+  --color-success-hover: #218838;
+  --color-secondary: #ddd;
+  --color-secondary-hover: #ccc;
+  --color-danger: #dc3545;
+  --color-danger-hover: #b02a37;
+  --color-purple: #6f42c1;
+  --color-purple-hover: #5a32a3;
+  --color-info: #17a2b8;
+  --color-info-hover: #138496;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f0f0f0;
+}
+
+/* Base custom styles to handle some specific global behaviors or UI specifics not easily inline-able */
+.bg-grid-pattern {
+  background-image: radial-gradient(#ccc 1px, transparent 0);
+  background-size: 40px 40px;
+  background-position: 0 0;
+}
+
+.connecting-mode {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.2);
+}
+
+.drag-handle {
+  font-size: 12px;
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Custom Webkit scrollbar for textareas/cards if needed, mostly handled by OS now */
