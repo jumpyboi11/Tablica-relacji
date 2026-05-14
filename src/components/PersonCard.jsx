@@ -7,23 +7,20 @@ export const PersonCard = memo(({
   deleteCard, 
   startConnection, 
   isConnectingMode,
-  onCardClick
+  onCardClick,
+  usedColors = []
 }) => {
   const isDraggingRef = useRef(false);
   const offsetRef = useRef({ x: 0, y: 0 });
   const cardRef = useRef(null);
+  const [colorDropdownOpen, setColorDropdownOpen] = useState(false);
 
-  // We use local state for dragging to make the drag buttery smooth without waiting for React cycle,
-  // but we also sync to global state so lines follow.
   const handlePointerDown = (e) => {
-    // Ignore if clicking on input or button
     if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
     
-    // Also ignore resize handle (bottom right)
     const rect = cardRef.current.getBoundingClientRect();
     if (e.clientX > rect.right - 20 && e.clientY > rect.bottom - 20) return;
 
-    // Only allow drag from header
     if (!e.target.closest('.card-header')) return;
 
     isDraggingRef.current = true;
@@ -34,7 +31,6 @@ export const PersonCard = memo(({
       y: (e.clientY - vp.y) / vp.scale - card.y
     };
     
-    // Add event listeners to window for smooth dragging outside the card bounds
     window.addEventListener('pointermove', handlePointerMove);
     window.addEventListener('pointerup', handlePointerUp);
   };
@@ -54,7 +50,6 @@ export const PersonCard = memo(({
     window.removeEventListener('pointerup', handlePointerUp);
   };
 
-  // Cleanup listeners
   useEffect(() => {
     return () => {
       window.removeEventListener('pointermove', handlePointerMove);
@@ -73,7 +68,6 @@ export const PersonCard = memo(({
     }
   };
 
-  // We need a ResizeObserver to update width/height globally when user resizes the card via native CSS resize
   useEffect(() => {
     if (!cardRef.current) return;
     
@@ -84,8 +78,6 @@ export const PersonCard = memo(({
         return;
       }
       for (let entry of entries) {
-        const { width, height } = entry.contentRect;
-        // The contentRect is inner width, better to get offsetWidth
         const el = entry.target;
         updateCard(card.id, { 
           width: `${el.offsetWidth}px`, 
@@ -97,6 +89,14 @@ export const PersonCard = memo(({
     ro.observe(cardRef.current);
     return () => ro.disconnect();
   }, [card.id, updateCard]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    if (!colorDropdownOpen) return;
+    const handleClickOutside = () => setColorDropdownOpen(false);
+    window.addEventListener('pointerdown', handleClickOutside);
+    return () => window.removeEventListener('pointerdown', handleClickOutside);
+  }, [colorDropdownOpen]);
 
   const avatarContent = card.avatarBg && card.avatarBg !== 'none' ? '' : '+';
   const bgStyle = card.avatarBg ? { backgroundImage: card.avatarBg } : {};
@@ -122,7 +122,7 @@ export const PersonCard = memo(({
         className="card-header text-white p-2 text-right cursor-grab active:cursor-grabbing flex justify-between items-center border-b-2 border-[#333] shrink-0"
         style={{ backgroundColor: card.headerColor || '#333333' }}
       >
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 relative">
           <span className="drag-handle">≡</span>
           <input 
             type="color" 
@@ -131,6 +131,39 @@ export const PersonCard = memo(({
             onChange={(e) => updateCard(card.id, { headerColor: e.target.value })}
             title="Zmień kolor" 
           />
+          {usedColors.length > 0 && (
+            <button
+              className="bg-black/30 border-none text-white cursor-pointer text-[10px] rounded px-1 py-0.5 transition-colors hover:bg-black/60 leading-none"
+              onClick={(e) => {
+                e.stopPropagation();
+                setColorDropdownOpen(!colorDropdownOpen);
+              }}
+              onPointerDown={(e) => e.stopPropagation()}
+              title="Szybki wybór koloru"
+            >
+              ▼
+            </button>
+          )}
+          {colorDropdownOpen && usedColors.length > 0 && (
+            <div
+              className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.2)] p-2 flex gap-1.5 flex-wrap z-50 min-w-[80px]"
+              onPointerDown={(e) => e.stopPropagation()}
+            >
+              {usedColors.map((color) => (
+                <button
+                  key={color}
+                  className="w-6 h-6 rounded-full border-2 border-[#ddd] cursor-pointer p-0 transition-transform hover:scale-125 hover:border-white"
+                  style={{ backgroundColor: color }}
+                  title={color}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    updateCard(card.id, { headerColor: color });
+                    setColorDropdownOpen(false);
+                  }}
+                />
+              ))}
+            </div>
+          )}
         </div>
         <div>
           <button 
@@ -184,3 +217,4 @@ export const PersonCard = memo(({
 });
 
 PersonCard.displayName = 'PersonCard';
+

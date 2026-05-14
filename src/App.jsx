@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useMemo } from 'react';
 import { useBoardState } from './hooks/useBoardState';
 import { Toolbar } from './components/Toolbar';
 import { Viewport } from './components/Viewport';
@@ -100,18 +100,26 @@ function App() {
             openModal={openEditModal} 
           />
           
-          {Object.values(cards).map(card => (
-            <PersonCard 
-              key={card.id}
-              card={card}
-              viewportRef={viewportRef}
-              updateCard={updateCard}
-              deleteCard={deleteCard}
-              startConnection={startConnection}
-              isConnectingMode={connectingFrom === card.id}
-              onCardClick={connectingFrom && connectingFrom !== card.id ? () => handleCardClick(card.id) : null}
-            />
-          ))}
+          {Object.values(cards).map(card => {
+            const usedColors = [...new Set(
+              Object.values(cards)
+                .map(c => c.headerColor || '#333333')
+                .filter(c => c !== (card.headerColor || '#333333'))
+            )];
+            return (
+              <PersonCard 
+                key={card.id}
+                card={card}
+                viewportRef={viewportRef}
+                updateCard={updateCard}
+                deleteCard={deleteCard}
+                startConnection={startConnection}
+                isConnectingMode={connectingFrom === card.id}
+                onCardClick={connectingFrom && connectingFrom !== card.id ? () => handleCardClick(card.id) : null}
+                usedColors={usedColors}
+              />
+            );
+          })}
         </Canvas>
       </Viewport>
 
