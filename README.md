@@ -1,16 +1,12 @@
-# React + Vite
+# Tablica Relacji
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Tablica relacji to szybki projekt stworzony głównie w celu nadążania za plotkami w pracy i życiu prywatnym.
+W pewnym momencie wszystkie nowe informacje o ludziach mogą się zacząć mieszać i gubić wiec tak for fun stworzyłem taką tablice żeby nadążać za tym co się dzieje w grupach ludzi. Swoją drogą aplikacja ta ma też potencjał przy tworzeniu fikcyjnych światów i zapisaniu relacji postaci w nich.
 
-Currently, two official plugins are available:
+## Funkcje
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Dodawanie i edycja osób** – możliwość wpisania imienia i nazwiska, wyboru płci oraz dodania notatek.
+- **Zarządzanie relacjami** – tworzenie, edytowanie i usuwanie połączeń między osobami.
+- **Wizualizacja graficzna** – intuicyjne rozmieszczanie osób i łączenie ich liniami.
+- **Zapis i odczyt** – możliwość zapisania aktualnej tablicy do pliku JSON oraz załadowania jej w późniejszym czasie.
+- **Nawigacja i powiększanie** – przesuwanie widoku i dostosowywanie powiększenia do aktualnych potrzeb.
